@@ -1076,7 +1076,7 @@ business, with a local development tool to match.
     const searchform=document.getElementById('search-form')
     const searchinput=document.getElementById('search-input')
 
-    searchform.addEventListener('keyup',function(e){
+    searchform.addEventListener('submit',function(e){
       e.preventDefault()
       const q=searchinput.value
       search(q)
