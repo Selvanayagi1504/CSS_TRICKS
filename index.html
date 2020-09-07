@@ -3,14 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<!-- <title>Bootstrap 4 Static Navbar</title> -->
 <title>    CSS-Tricks  </title>
-        <link rel="icon" href="https://css-tricks.com/apple-touch-icon.png" type = "image/x-icon"/>
-        <link rel="stylesheet" href="home.css" type="text/css" media="screen"/>
+<link rel="icon" href="https://css-tricks.com/apple-touch-icon.png" type = "image/x-icon"/>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> -->
+     <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
+<link rel="stylesheet" href="home.css" type="text/css" media="screen"/>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+
+<style>
+.imgWidth {
+    width: 125px;
+    height: 125px;
+    margin-bottom: 0px;
+}
+.col-xs-3 {
+    width: 23%;
+}
+</style>
 </head>
 <body>
 
@@ -117,8 +131,11 @@ Fresh Article August 24, 2020
             <a href="https://css-tricks.com/tag/jamstack/" rel="tag">jamstack</a> <a href="https://css-tricks.com/tag/maintenance/" rel="tag">maintenance</a> 
         </div>
         </div>
-    <div class="col-sm" style="margin-left: 23em;">
+    <!-- <div class="col-sm" style="margin-left: 23em;">
     <div id="results" class="results" style="padding:4px;width: 500px;height: 31em;overflow-x: hidden;overflow-y: auto;text-align:justify;"></div>
+    </div> -->
+    <div class="col-sm" style="margin-left: 14em;">
+    <div id="gifs" class="results" style="overflow-x: hidden;overflow-y: auto;text-align:justify; height:36em"></div>
     </div>
 </div>
         <div class="articles">
@@ -1072,16 +1089,18 @@ business, with a local development tool to match.
 </footer>
     </div>
     </div>
-    <script>
+    <!-- <script>
     const searchform=document.getElementById('search-form')
     const searchinput=document.getElementById('search-input')
-
+    // var i=0;
+    // while(i<5){
     searchform.addEventListener('submit',function(e){
       e.preventDefault()
       const q=searchinput.value
       search(q)
     })
-
+  //   i++
+  // }
     function search(q){
         // const q='cats'
         const apikey='KgWv0OIGlG4MbgqeluCGOvCTj294oAxk'
@@ -1108,9 +1127,271 @@ business, with a local development tool to match.
           console.log(err.message)
         })
     }
+    </script> -->
 
+
+<script type="text/javascript">
     
-    
+
+const searchForm=document.getElementById('search-form')
+const searchInput=document.getElementById('search-input')
+
+searchForm.addEventListener('submit',function(e){
+e.preventDefault()
+const q=searchInput.value
+
+search(q)
+})
+
+
+
+
+
+function search(custom){
+var imagecount = 24;
+var offset = 0;
+var queryURL = 'https://api.giphy.com/v1/gifs/search?q='+custom+'&api_key=KgWv0OIGlG4MbgqeluCGOvCTj294oAxk&limit='+imagecount+'&offset='+offset+'';
+//Used to store the returned object from Giphy
+var object;
+
+//Code for AJAX request and appending images
+function getgifs(){
+$('#gifs').empty();
+offset = 0;
+var queryURL = 'https://api.giphy.com/v1/gifs/search?q='+custom+'&api_key=KgWv0OIGlG4MbgqeluCGOvCTj294oAxk&limit='+imagecount+'&offset='+offset+'';
+$.ajax({
+        url: queryURL,
+        method: "GET"
+    }).done(function(response) {
+        console.log(response);
+        object = response;
+        //If no results, show no result screen
+        if(response.data.length<1){
+            reset();
+            gifbackground = true;
+            $('#songplayer2').get(0).play();
+            $('body').css('background-image', 'url(images/marisaspin.gif)').css('background-color', 'pink');
+            swoosh.pause();
+            stopsound();
+            fail.play();
+            $('#gifs').empty();
+            $('#gifs').append('<div class="row"><div class="col-xs-3"></div><div id="noresults" class="animatethis col-xs-6">NO RESULTS...</div><div class="col-xs-3"></div></div>');
+            $('#gifs').append('<div class="row"><div class="col-xs-3"></div><div id="noresults" class="animatethis col-xs-6">TRY SOMETHING ELSE!</div><div class="col-xs-3"></div></div>');     
+            $('.animatethis').addClass("animated rubberBand infinite");
+        }
+        //Append gifs to page
+        else {
+            //Creates 4 columns to store rows
+            for(var i = 0; i<4; i++){
+                $('#gifs').append('<div class="col-xs-3" id="col'+i+'"></div>');
+            }
+            //Creates #gif div to append gifs to
+            for (i = 0; i<response.data.length; i+=4){
+                var i1=i+1;
+                var i2=i+2;
+                var i3=i+3;
+                $('#col0').append('<div class="container-fluid"><div class="row" id="gif'+i+'"></div></div>');
+                $('#col1').append('<div class="container-fluid"><div class="row" id="gif'+i1+'"></div></div>');
+                $('#col2').append('<div class="container-fluid"><div class="row" id="gif'+i2+'"></div></div>');
+                $('#col3').append('<div class="container-fluid"><div class="row" id="gif'+i3+'"></div></div>');
+            }
+            //Appends gifs to proper #gif div
+            for (i = 0; i < response.data.length; i++) {
+                var mystring = response.data[i].title;
+                var newstring = mystring.replace(/\s/g, "").length;
+                if(newstring>0){
+                    var temptitle = response.data[i].title;
+                }
+                else {
+                    var temptitle = 'No Title';
+                }
+                $('#gif'+i+'').append('<div class="gifContainer fadeinout"><a href="'+response.data[i].url+'" target="_blank"><img class="imgWidth" numvalue="'+i+'" src="'+response.data[i].images.downsized.url+'" data-original="'+response.data[i].images.downsized.url+'" data-still="'+response.data[i].images.downsized_still.url+'"></a></div>');
+                $('#gif'+i+'').addClass('animated bounceIn');
+            }
+        }
+        //End Append gifs to page
+    });
+}
+//End AJAX and gif append
+
+//Infinite Scrolling
+function getgifspagination(){
+offset += imagecount;
+var queryURL = 'https://api.giphy.com/v1/gifs/search?q='+custom+'&api_key=KgWv0OIGlG4MbgqeluCGOvCTj294oAxk&limit='+imagecount+'&offset='+offset+'';
+$.ajax({
+        url: queryURL,
+        method: "GET"
+    }).done(function(response) {
+        console.log(response);
+        object = response;
+        //If no results, don't append anything
+        if(response.data.length<1){
+            return;
+        }
+        //Append gifs to page
+        else {
+        //Appends #gif div into the shortest vertical column
+            //Variables for checking column height
+            var col0H = document.getElementById('col0').clientHeight;
+            var col1H = document.getElementById('col1').clientHeight;
+            var col2H = document.getElementById('col2').clientHeight;
+            var col3H = document.getElementById('col3').clientHeight;
+            //Appends 2 extra gif divs to first column
+            if(col0H <= col1H && col0H <= col2H && col0H <= col3H){
+                console.log('col0 shortest');
+                for (var i = offset; i<offset+response.data.length-4; i+=4){
+                    var i1=i+1;
+                    var i2=i+2;
+                    var i3=i+3;
+                    $('#col0').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i+'"></div></div>');
+                    $('#col1').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i1+'"></div></div>');
+                    $('#col2').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i2+'"></div></div>');
+                    $('#col3').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i3+'"></div></div>');
+                }
+                for (var i = offset+response.data.length-4; i<offset+response.data.length; i+=4){
+                    var i1=i+1;
+                    var i2=i+2;
+                    var i3=i+3;
+                    $('#col0').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i+'"></div></div>');
+                    $('#col0').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i1+'"></div></div>');
+                    $('#col0').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i2+'"></div></div>');
+                    $('#col1').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i3+'"></div></div>');
+                }               
+
+            }
+            //Appends 2 extra gif divs to second column
+            else if(col1H <= col0H && col1H <= col2H && col1H <= col3H){
+                console.log('col1 shortest');
+                for (var i = offset; i<offset+response.data.length-4; i+=4){
+                    var i1=i+1;
+                    var i2=i+2;
+                    var i3=i+3;
+                    $('#col0').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i+'"></div></div>');
+                    $('#col1').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i1+'"></div></div>');
+                    $('#col2').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i2+'"></div></div>');
+                    $('#col3').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i3+'"></div></div>');
+                }
+                for (var i = offset+response.data.length-4; i<offset+response.data.length; i+=4){
+                    var i1=i+1;
+                    var i2=i+2;
+                    var i3=i+3;
+                    $('#col1').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i+'"></div></div>');
+                    $('#col1').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i1+'"></div></div>');
+                    $('#col1').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i2+'"></div></div>');
+                    $('#col2').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i3+'"></div></div>');
+                }               
+
+            }
+            //Appends 2 extra gif divs to third column
+            else if(col2H <= col0H && col2H <= col1H && col2H <= col3H){
+                console.log('col2 shortest');
+                for (var i = offset; i<offset+response.data.length-4; i+=4){
+                    var i1=i+1;
+                    var i2=i+2;
+                    var i3=i+3;
+                    $('#col0').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i+'"></div></div>');
+                    $('#col1').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i1+'"></div></div>');
+                    $('#col2').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i2+'"></div></div>');
+                    $('#col3').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i3+'"></div></div>');
+                }
+                for (var i = offset+response.data.length-4; i<offset+response.data.length; i+=4){
+                    var i1=i+1;
+                    var i2=i+2;
+                    var i3=i+3;
+                    $('#col2').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i+'"></div></div>');
+                    $('#col2').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i1+'"></div></div>');
+                    $('#col2').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i2+'"></div></div>');
+                    $('#col3').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i3+'"></div></div>');
+                }               
+
+            }
+            //Appends 2 extra gif divs to fourth column
+            else if(col3H <= col0H && col3H <= col1H && col3H <= col2H){
+                console.log('col3 shortest');
+                for (var i = offset; i<offset+response.data.length-4; i+=4){
+                    var i1=i+1;
+                    var i2=i+2;
+                    var i3=i+3;
+                    $('#col0').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i+'"></div></div>');
+                    $('#col1').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i1+'"></div></div>');
+                    $('#col2').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i2+'"></div></div>');
+                    $('#col3').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i3+'"></div></div>');
+                }
+                for (var i = offset+response.data.length-4; i<offset+response.data.length; i+=4){
+                    var i1=i+1;
+                    var i2=i+2;
+                    var i3=i+3;
+                    $('#col3').append('<div class="container-fluid"><div class="row ajaxhide id="gif'+i+'"></div></div>');
+                    $('#col3').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i1+'"></div></div>');
+                    $('#col3').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i2+'"></div></div>');
+                    $('#col4').append('<div class="container-fluid"><div class="row ajaxhide" id="gif'+i3+'"></div></div>');
+                }
+            }
+            //Appends gifs to proper #gif div
+            for (var i = offset; i<offset+response.data.length; i++) {
+                var mystring = response.data[i-offset].title;
+                var newstring = mystring.replace(/\s/g, "").length;
+                if(newstring>0){
+                    var temptitle = response.data[i-offset].title
+                }
+                else {
+                    var temptitle = 'No Title'
+                }
+                $('#gif'+i+'').append('<div class="gifContainer fadeinout"><a href="'+response.data[i-offset].url+'" target="_blank"><img class="imgWidth" numvalue="'+i+'" src="'+response.data[i-offset].images.downsized.url+'" data-original="'+response.data[i-offset].images.downsized.url+'" data-still="'+response.data[i-offset].images.downsized_still.url+'"></a></div>');
+                $('#gif'+i+'').addClass('animated bounceIn');
+            }
+        }
+        //End Append gifs to page
+    });
+}
+//end infinite scrolling
+
+getgifs();
+
+//boolean for stopping the page from doing multiple paginations at once
+var paginate = true;
+
+var paginatetoggle = function(){
+    paginate=true;
+}
+
+//infinite scroll flag based on scroll location
+$(window).scroll(function () {
+    if ($(window).scrollTop() >= $(document).height() - $(window).height() - 31) {
+        if(paginate){
+            paginate=false;
+            console.log('pagination');
+            getgifspagination();
+            setTimeout(paginatetoggle, 1000);
+        }
+        else{
+            console.log('only one pagination plze');
+            return;
+        }
+    }
+});
+//end infinite scroll flag
+
+var fadeout = function(){
+    var changeImg = $(this).children().eq(0).children().eq(0);
+    var stillimage = changeImg.attr('data-still');
+    changeImg.attr("src",""+stillimage+"").css('filter', 'brightness(50%)');
+}
+
+var fadein = function(){
+    var changeImg = $(this).children().eq(0).children().eq(0);
+    var originalimage = changeImg.attr('data-original');
+    changeImg.attr("src",""+originalimage+"").css('filter', 'brightness(100%)');
+}
+
+$(document).on("mouseover", ".fadeinout", fadeout);
+$(document).on("mouseout", ".fadeinout", fadein);
+}
     </script>
+</body>
+</html>
+
+
+
 </body>
 </html>
